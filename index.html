@@ -42,6 +42,7 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.1), inset 0 -5px 10px rgba(0,0,0,0.15);
             transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 4px solid white;
+            cursor: pointer;
         }
         .menu-box:hover {
             transform: translateY(-10px) scale(1.05);
@@ -149,6 +150,20 @@
         const successSound = new Tone.PolySynth(Tone.Synth, { envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 } }).toDestination();
         const errorSound = new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0 } }).toDestination();
         
+        // --- EFEK SUARA MENU (DIPERBAIKI) ---
+        const menuHoverSound = new Tone.PolySynth(Tone.MembraneSynth, {
+            pitchDecay: 0.01,
+            octaves: 6,
+            oscillator: { type: "sine" },
+            envelope: { attack: 0.001, decay: 0.15, sustain: 0.01, release: 0.01 }
+        }).toDestination();
+        menuHoverSound.volume.value = -20; // Membuat suara lebih lembut
+
+        const menuClickSound = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: 'triangle' },
+            envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.1 }
+        }).toDestination();
+        
         const colors = ['bg-red-400', 'bg-orange-400', 'bg-amber-400', 'bg-yellow-400', 'bg-lime-400', 'bg-green-400', 'bg-emerald-400', 'bg-teal-400', 'bg-cyan-400', 'bg-sky-400', 'bg-blue-400', 'bg-indigo-400', 'bg-violet-400', 'bg-purple-400', 'bg-fuchsia-400', 'bg-pink-400', 'bg-rose-400'];
 
         function speak(text, lang = 'id-ID', rate = 0.9) {
@@ -187,17 +202,29 @@
             if (activePage === 'numberGame') initNumberGame();
         }
 
-        menuButtons.learn.addEventListener('click', () => switchPage('learn'));
-        menuButtons.hijaiyah.addEventListener('click', () => switchPage('hijaiyah'));
-        menuButtons.game.addEventListener('click', () => switchPage('game'));
-        menuButtons.numberGame.addEventListener('click', () => switchPage('numberGame'));
+        // --- MENAMBAHKAN EFEK SUARA KE TOMBOL MENU ---
+        Object.keys(menuButtons).forEach(key => {
+            const button = menuButtons[key];
+            // Efek suara saat kursor diarahkan (hover)
+            button.addEventListener('mouseenter', () => {
+                menuHoverSound.triggerAttackRelease('C5', '32n');
+            });
+            // Efek suara saat tombol diklik
+            button.addEventListener('click', () => {
+                menuClickSound.triggerAttackRelease('E4', '16n');
+                switchPage(key);
+            });
+        });
         
-        // --- Tombol Kembali Universal (DIPERBAIKI) ---
+        // --- Tombol Kembali Universal ---
         function createBackButton() {
             const button = document.createElement('button');
             button.className = 'absolute top-4 left-4 px-4 py-2 bg-white/80 text-slate-700 font-bold rounded-full shadow-md hover:bg-white hover:scale-105 transition-all duration-200 z-20';
             button.innerHTML = '&larr; Kembali';
-            button.addEventListener('click', () => switchPage('home'));
+            button.addEventListener('click', () => {
+                menuClickSound.triggerAttackRelease('C4', '16n'); // Suara klik saat kembali
+                switchPage('home');
+            });
             return button;
         }
 
@@ -233,7 +260,7 @@
                     <button id="show-numbers" class="px-6 py-3 bg-pink-500 text-white font-bold rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300 focus:outline-none">Angka (1-10)</button>
                 </div>
                 <div id="content-grid-learn" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-4 w-full max-w-4xl"></div>`;
-            pages.learn.prepend(createBackButton()); // Tombol kembali ditambahkan dengan benar
+            pages.learn.prepend(createBackButton());
             
             const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
             const numbers = '1 2 3 4 5 6 7 8 9 10'.split(' ');
@@ -249,7 +276,7 @@
             pages.hijaiyah.innerHTML = `
                 <p class="text-slate-500 text-lg md:text-xl mt-16 text-center mb-6">Sentuh kartu untuk mendengar suaranya</p>
                 <div id="content-grid-hijaiyah" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8 gap-4 w-full max-w-4xl"></div>`;
-            pages.hijaiyah.prepend(createBackButton()); // Tombol kembali ditambahkan dengan benar
+            pages.hijaiyah.prepend(createBackButton());
             
             const hijaiyahLetters = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي'];
             const hijaiyahNames = {
@@ -343,7 +370,7 @@
                         </div>
                     </div>
                 </div>`;
-            pages.game.prepend(createBackButton()); // Tombol kembali ditambahkan dengan benar
+            pages.game.prepend(createBackButton());
 
             const consonants = ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'T', 'W', 'Y', 'Z'];
             const vowels = ['A', 'I', 'U', 'E', 'O'];
@@ -404,7 +431,7 @@
                     </div>
                     <div id="feedback-message" class="text-2xl font-bold h-8 mt-2"></div>
                 </div>`;
-            pages.numberGame.prepend(createBackButton()); // Tombol kembali ditambahkan dengan benar
+            pages.numberGame.prepend(createBackButton());
 
             const numbersForGame = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
             let selectedNumber1 = null;
