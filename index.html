@@ -6,6 +6,8 @@
     <title>Game Sang Juara</title>
     <!-- Memuat Tailwind CSS untuk styling modern -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat Font Awesome untuk ikon donasi -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Memuat Tone.js untuk efek suara interaktif (hanya untuk umpan balik non-vokal) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
@@ -103,6 +105,11 @@
             border-right: 25px solid #ef4444; /* Panah menunjuk ke kanan */
             z-index: 10;
         }
+
+        .vowel-card-selected {
+            outline: 4px solid #f9a8d4; /* Warna highlight yang berbeda */
+            transform: scale(1.15); /* Sedikit lebih besar */
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-amber-100 via-rose-100 to-sky-100 min-h-screen flex flex-col items-center justify-center p-4">
@@ -132,10 +139,16 @@
             </button>
             <!-- Menu Main Angka -->
             <button id="menu-number-game" class="menu-box bg-gradient-to-br from-purple-400 to-indigo-400">
-                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
                 <span class="text-xl font-semibold">Main Angka</span>
             </button>
         </div>
+        
+        <!-- Tombol Donasi (Baru) -->
+        <a id="donation-button" href="https://sahabat-digital.myr.id/galang-dana/v2/pengembangan-aplikasi-islami" target="_blank" class="mt-8 px-6 py-3 bg-white/90 text-slate-700 font-bold rounded-full shadow-lg hover:bg-white hover:scale-105 transition-all duration-300 transform flex items-center gap-2">
+            <i class="fa-solid fa-heart text-red-500"></i>
+            <span>Dukung Kami</span>
+        </a>
     </div>
 
     <!-- KONTEN UNTUK HALAMAN LAIN (disembunyikan) -->
